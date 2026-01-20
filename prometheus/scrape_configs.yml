@@ -1,0 +1,9 @@
+# Example Prometheus scrape config for PiCrawler devices
+scrape_configs:
+  - job_name: 'picrawler-devices'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['pi-crawler-1.local:8000']
+        labels:
+          role: 'robot'
+    # If using Cloudflare Tunnel, add relabel or service discovery as appropriate
