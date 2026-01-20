@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+*.env
+
+# Logs
+log/
+*.log
+
+# Environment variables
+.env
+.flaskenv
+
+# Data
+*.sqlite3
+*.db
+*.pickle
+*.json # Consider what JSON files should be ignored (e.g., local config, temp data)
+
+# IDE specific files
+.idea/
+*.swp
+*~
