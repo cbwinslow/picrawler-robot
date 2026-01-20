@@ -1,0 +1,15 @@
+- id: operational/heartbeat-missing
+  severity: high
+  description: "If a critical agent stops heartbeating for 90s, escalate alert."
+  trigger:
+    pattern: "heartbeat"
+    condition: "missing_for > 90"
+  enforcement_action:
+    - alert_operator
+    - attempt_restart_agent
+  tests:
+    - simulate_event: {event: heartbeat_missing, duration_seconds: 95, expected_action: attempt_restart_agent}
+
+- id: privacy/no-raw-frame-upload
+  severity: high
+  description: "Raw camera frames must not be uploaded off-device unless enabled by operator."]}

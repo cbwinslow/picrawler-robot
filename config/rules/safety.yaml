@@ -1,0 +1,25 @@
+- id: safety/battery-low
+  severity: critical
+  description: "If battery voltage < 6.0V for 15s, stop motors and signal emergency."
+  trigger:
+    metric: picrawler_battery_voltage_volts
+    condition: "< 6.0"
+    duration_seconds: 15
+  enforcement_action:
+    - stop_motors
+    - alert_operator
+  tests:
+    - simulate_metric: {metric: picrawler_battery_voltage_volts, values: [6.5,6.0,5.8], expected_action: stop_motors}
+
+- id: safety/overtemp
+  severity: critical
+  description: "If CPU temperature > 85C, reduce performance and notify operator."
+  trigger:
+    metric: picrawler_cpu_temp_celsius
+    condition: "> 85"
+    duration_seconds: 10
+  enforcement_action:
+    - throttle_cpu_tasks
+    - alert_operator
+  tests:
+    - simulate_metric: {metric: picrawler_cpu_temp_celsius, values: [70,86,90], expected_action: throttle_cpu_tasks}

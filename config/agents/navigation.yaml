@@ -1,0 +1,14 @@
+id: navigation-agent
+name: navigation-agent
+description: "High-level navigation: waypoint planning, obstacle avoidance, and publishing motor commands."
+inputs:
+  - odometry
+  - imu
+  - front_ultrasonic
+  - camera_detections
+outputs:
+  - motor_commands
+  - nav_status
+safety_level: critical
+run_mode: onboard
+test_plan: "Unit tests for obstacle reaction and integration test with mocked sensors to validate stop behavior."
