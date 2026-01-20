@@ -1,0 +1,15 @@
+[Unit]
+Description=PiCrawler Metrics Exporter
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/picrawler_project
+ExecStart=/usr/bin/python3 /home/pi/picrawler_project/scripts/metrics_exporter.py --port 8000
+Restart=on-failure
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1 METRICS_PORT=8000
+
+[Install]
+WantedBy=multi-user.target
