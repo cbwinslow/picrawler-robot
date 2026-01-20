@@ -1,0 +1,15 @@
+[Unit]
+Description=PiCrawler Robot Daemon
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/picrawler_project
+ExecStart=/usr/bin/python3 /home/pi/picrawler_project/picrawler_daemon.py
+Restart=on-failure
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
