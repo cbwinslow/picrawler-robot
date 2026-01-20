@@ -1,0 +1,11 @@
+id: vision-agent
+name: vision-agent
+description: "Process camera frames, run object detection, face recognition, and publish detections and bounding boxes."
+inputs:
+  - camera_frame
+outputs:
+  - detections
+  - detection_health
+safety_level: high
+run_mode: onboard
+test_plan: "Run detection on sample frames in CI to ensure models load and outputs are in expected schema."
