@@ -33,7 +33,11 @@ def run_watchdog(metrics_url: str, interval: float = 5.0):
             actions = engine.evaluate_snapshot(metrics, ts=ts)
             for a in actions:
                 print(f"[watchdog] Rule triggered: {a['rule_id']} -> actions: {a['actions']}")
-                # TODO: implement enforcement hooks (stop motors, throttle, restart agent)
+                # Call enforcement hooks (safe by default). Use --enforce to actually take actions.
+                from scripts.enforcement import perform_actions
+                enforce = getattr(args, 'enforce', False)
+                results = perform_actions(a['actions'], dry_run=not enforce)
+                print(f"[watchdog] Enforcement results: {results}")
         except Exception as e:
             print(f"[watchdog] Error fetching metrics: {e}")
         time.sleep(interval)
