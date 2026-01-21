@@ -1,0 +1,35 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "panels": [
+    {
+      "type": "row",
+      "title": "System Overview"
+    },
+    {
+      "type": "graph",
+      "title": "CPU Temp / CPU %",
+      "targets": [
+        { "expr": "picrawler_cpu_temp_celsius", "legendFormat": "CPU Temp (C)" },
+        { "expr": "picrawler_process_cpu_percent", "legendFormat": "CPU %" }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "Battery Voltage",
+      "targets": [
+        { "expr": "picrawler_battery_voltage_volts", "legendFormat": "Battery V" }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Last Heartbeat",
+      "targets": [
+        { "expr": "picrawler_last_heartbeat_timestamp" }
+      ]
+    }
+  ],
+  "schemaVersion": 16,
+  "title": "PiCrawler Overview"
+}
