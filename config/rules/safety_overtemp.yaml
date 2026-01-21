@@ -1,0 +1,16 @@
+- id: safety/overtemp
+  severity: critical
+  description: |-
+    If CPU temperature exceeds threshold, throttle CPU-bound work and alert operator.
+    If the temperature reaches a higher emergency limit, stop motors.
+  trigger:
+    metric: picrawler_cpu_temp_celsius
+    condition: "> 85"
+    duration_seconds: 10
+  enforcement_action:
+    - throttle_cpu_tasks
+    - alert_operator
+  metadata:
+    emergency_threshold: 90
+  tests:
+    - simulate_metric: {metric: picrawler_cpu_temp_celsius, values: [80, 86], expected_action: [throttle_cpu_tasks, alert_operator]}

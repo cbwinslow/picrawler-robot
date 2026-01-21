@@ -1,0 +1,14 @@
+- id: safety/battery-low
+  severity: critical
+  description: |-
+    If battery voltage drops below safe threshold for a sustained duration,
+    stop motors and alert the operator.
+  trigger:
+    metric: picrawler_battery_voltage_volts
+    condition: "< 6.0"
+    duration_seconds: 15
+  enforcement_action:
+    - stop_motors
+    - alert_operator
+  tests:
+    - simulate_metric: {metric: picrawler_battery_voltage_volts, values: [6.5, 5.5], expected_action: [stop_motors, alert_operator]}

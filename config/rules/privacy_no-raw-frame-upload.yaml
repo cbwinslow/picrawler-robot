@@ -1,0 +1,17 @@
+- id: privacy/no-raw-frame-upload
+  severity: high
+  description: |-
+    Raw camera frames must not be uploaded off-device unless operator_consent is enabled.
+    For now, this rule triggers when an upload attempt metric is observed while uploads are disabled.
+  trigger:
+    metric: camera_raw_upload_attempt
+    condition: "== 1"
+    duration_seconds: 0
+  enforcement_action:
+    - block_upload
+    - alert_operator
+  notes: |
+    This rule is currently an operational guard; a future improvement is to add an "operator_consent" boolean
+    into the rule engine input or move privacy rules into an external policy engine (e.g., OPA).
+  tests:
+    - simulate_metric: {metric: camera_raw_upload_attempt, values: [0, 1], expected_action: [block_upload, alert_operator]}
