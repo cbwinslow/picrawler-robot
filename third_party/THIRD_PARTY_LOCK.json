@@ -1,0 +1,16 @@
+{
+  "picrawler": {
+    "url": "https://github.com/sunfounder/picrawler.git",
+    "commit": "4e748d8f1cbe45097a21e949407f88f5ab38fad7"
+  },
+  "robot-hat": {
+    "url": "https://github.com/sunfounder/robot-hat.git",
+    "commit": "da164a67916744b2374e024b88c62f22c018da95",
+    "branch": "v2.0"
+  },
+  "vilib": {
+    "url": "https://github.com/sunfounder/vilib.git",
+    "commit": "7d0f77f75cefbdbccf5b5e4398e4664911a2abe3",
+    "branch": "picamera2"
+  }
+}
