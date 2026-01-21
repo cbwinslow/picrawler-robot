@@ -1,0 +1,21 @@
+id: ai-agent
+name: ai-agent
+description: "High-level AI orchestrator: handles natural language tasks, behavior selection, and coordinates other agents. Supports hybrid mode: remote LLM via OpenRouter and local fallback models for low-latency tasks."
+inputs:
+  - operator_commands
+  - telemetry
+  - vision_detections
+outputs:
+  - behavior_decisions
+  - operator_messages
+  - assistive_actions
+safety_level: high
+run_mode: hybrid
+model:
+  primary: openrouter
+  fallback: local-small
+openrouter:
+  client: openrouter-sdk
+  model: free-tier
+  rate_limits_per_minute: 60
+test_plan: "Unit tests for prompt templates and integration tests using mocked OpenRouter responses."
