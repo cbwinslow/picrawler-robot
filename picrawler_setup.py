@@ -151,29 +151,54 @@ def install_dependencies():
     ]
     run_command(["sudo", "apt", "install", "-y"] + base_packages, "Installing essential system packages")
 
-    # Install SunFounder libraries (robot-hat v2.0, vilib picamera2, picrawler)
-    logger.info("Cloning and installing SunFounder PiCrawler components (robot-hat, vilib, picrawler)")
-    repos = [
-        ("https://github.com/sunfounder/robot-hat.git", "v2.0", os.path.join(PROJECT_ROOT, "robot-hat"), "cd {dest} && sudo python3 setup.py install"),
-        ("https://github.com/sunfounder/vilib.git", "picamera2", os.path.join(PROJECT_ROOT, "vilib"), "cd {dest} && sudo python3 install.py"),
-        ("https://github.com/sunfounder/picrawler.git", None, os.path.join(PROJECT_ROOT, "picrawler"), "cd {dest} && sudo python3 setup.py install"),
-    ]
+    # Use pinned submodules under third_party if available, otherwise fall back to cloning with pinned commits
+    logger.info("Installing SunFounder components from third_party submodules if present")
+    third_party_dir = os.path.join(PROJECT_ROOT, "third_party")
+    lock_file = os.path.join(third_party_dir, "THIRD_PARTY_LOCK.json")
 
-    for url, branch, dest, install_cmd_template in repos:
-        if not os.path.exists(dest):
-            clone_cmd = ["git", "clone"]
-            if branch:
-                clone_cmd += ["-b", branch]
-            clone_cmd += [url, dest]
-            run_command(clone_cmd, f"Cloning {url} ({'branch '+branch if branch else 'default branch'})")
-        else:
-            logger.info(f"{dest} already exists, skipping clone.")
-
-        install_cmd = install_cmd_template.format(dest=dest)
+    if os.path.isdir(third_party_dir) and os.path.exists(lock_file):
         try:
-            run_command(install_cmd, f"Installing from {dest}", shell=True)
-        except SystemExit:
-            logger.warning(f"Installation command for {dest} failed; please run it manually in {dest}.")
+            import json as _json
+            with open(lock_file, 'r') as lf:
+                lock = _json.load(lf)
+            for name, meta in lock.items():
+                src = meta['url']
+                dest = os.path.join(third_party_dir, name)
+                if not os.path.exists(dest):
+                    run_command(["git", "submodule", "update", "--init", dest], f"Initializing submodule {name}")
+                # Try to install using setup.py or custom installer
+                if os.path.exists(os.path.join(dest, 'setup.py')):
+                    run_command(f"cd {dest} && sudo python3 setup.py install", f"Installing {name} via setup.py", shell=True)
+                elif os.path.exists(os.path.join(dest, 'install.py')):
+                    run_command(f"cd {dest} && sudo python3 install.py", f"Installing {name} via install.py", shell=True)
+                else:
+                    logger.info(f"No installer detected for {name}, skipping install step.")
+        except Exception as e:
+            logger.warning(f"Failed to install from third_party lock: {e}")
+            logger.info("Falling back to cloning individual repos as before.")
+    else:
+        logger.info("No third_party lock found. Falling back to cloning upstream (not pinned). This is less reproducible.")
+        repos = [
+            ("https://github.com/sunfounder/robot-hat.git", "v2.0", os.path.join(PROJECT_ROOT, "robot-hat"), "cd {dest} && sudo python3 setup.py install"),
+            ("https://github.com/sunfounder/vilib.git", "picamera2", os.path.join(PROJECT_ROOT, "vilib"), "cd {dest} && sudo python3 install.py"),
+            ("https://github.com/sunfounder/picrawler.git", None, os.path.join(PROJECT_ROOT, "picrawler"), "cd {dest} && sudo python3 setup.py install"),
+        ]
+
+        for url, branch, dest, install_cmd_template in repos:
+            if not os.path.exists(dest):
+                clone_cmd = ["git", "clone"]
+                if branch:
+                    clone_cmd += ["-b", branch]
+                clone_cmd += [url, dest]
+                run_command(clone_cmd, f"Cloning {url} ({'branch '+branch if branch else 'default branch'})")
+            else:
+                logger.info(f"{dest} already exists, skipping clone.")
+
+            install_cmd = install_cmd_template.format(dest=dest)
+            try:
+                run_command(install_cmd, f"Installing from {dest}", shell=True)
+            except SystemExit:
+                logger.warning(f"Installation command for {dest} failed; please run it manually in {dest}.")
 
     # Run i2samp.sh if present (sets up I2S amplifier for audio)
     i2s_script = os.path.join(PROJECT_ROOT, "picrawler", "i2samp.sh")

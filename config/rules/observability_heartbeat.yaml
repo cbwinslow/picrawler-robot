@@ -1,0 +1,14 @@
+- id: observability/heartbeat
+  severity: medium
+  description: |-
+    Agents marked as critical must keep their `heartbeat_age_seconds` low.
+    If the heartbeat age exceeds the threshold, attempt a restart and alert operator.
+  trigger:
+    metric: picrawler_agent_heartbeat_age_seconds
+    condition: "> 90"
+    duration_seconds: 0
+  enforcement_action:
+    - attempt_restart_agent
+    - alert_operator
+  tests:
+    - simulate_metric: {metric: picrawler_agent_heartbeat_age_seconds, values: [10, 95], expected_action: [attempt_restart_agent, alert_operator]}

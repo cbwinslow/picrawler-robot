@@ -2,14 +2,24 @@
   severity: high
   description: "If a critical agent stops heartbeating for 90s, escalate alert."
   trigger:
-    pattern: "heartbeat"
-    condition: "missing_for > 90"
+    metric: picrawler_agent_heartbeat_age_seconds
+    condition: "> 90"
+    duration_seconds: 0
   enforcement_action:
     - alert_operator
     - attempt_restart_agent
   tests:
-    - simulate_event: {event: heartbeat_missing, duration_seconds: 95, expected_action: attempt_restart_agent}
+    - simulate_metric: {metric: picrawler_agent_heartbeat_age_seconds, values: [10, 95], expected_action: [attempt_restart_agent]}
 
 - id: privacy/no-raw-frame-upload
   severity: high
-  description: "Raw camera frames must not be uploaded off-device unless enabled by operator."]}
+  description: "Raw camera frames must not be uploaded off-device unless enabled by operator."
+  trigger:
+    metric: camera_raw_upload_attempt
+    condition: "== 1"
+    duration_seconds: 0
+  enforcement_action:
+    - block_upload
+    - alert_operator
+  tests:
+    - simulate_metric: {metric: camera_raw_upload_attempt, values: [0, 1], expected_action: [block_upload, alert_operator]}

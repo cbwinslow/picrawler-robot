@@ -8,7 +8,8 @@ Principles
 - Export a `/metrics` HTTP endpoint on the device for scraping.
 - Logs: structured logs (JSON) written to `journald` and to rotating logs under `/var/log/picrawler/`.
 - Traces: instrument long-running tasks (e.g., navigation decisions, CV pipeline) with OpenTelemetry spans when possible.
-- Telemetry: periodic summaries pushed to a remote backend via Cloudflare Tunnel or via secure upload to S3-like bucket; respect privacy and do not leak secrets in telemetry.
+- Telemetry: periodic summaries pushed to a remote backend via Cloudflare Tunnel (recommended, outbound-only) or via secure upload to S3-like bucket; respect privacy and do not leak secrets in telemetry.
+  - Use `cloudflared` (Cloudflare Tunnel) for outbound-only secure connections from device to operator control plane; configure tunnels with service routes to limit access.
 
 Metrics schema (initial)
 - picrawler_process_cpu_percent

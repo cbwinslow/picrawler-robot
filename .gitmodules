@@ -1,0 +1,11 @@
+[submodule "third_party/robot-hat"]
+	path = third_party/robot-hat
+	url = https://github.com/sunfounder/robot-hat.git
+	branch = v2.0
+[submodule "third_party/vilib"]
+	path = third_party/vilib
+	url = https://github.com/sunfounder/vilib.git
+	branch = picamera2
+[submodule "third_party/picrawler"]
+	path = third_party/picrawler
+	url = https://github.com/sunfounder/picrawler.git

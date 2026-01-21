@@ -1,0 +1,4 @@
+default:
+  webhook_url: "${PICRAWLER_ALERT_WEBHOOK:-}"
+  rate_limit_seconds: 10
+  retries: 3

@@ -1,0 +1,14 @@
+- id: safety/collision-imminent
+  severity: critical
+  description: |-
+    When an ultrasonic or vision sensor indicates an object is too close,
+    immediately stop motion to avoid collision.
+  trigger:
+    metric: ultrasonic_distance_m
+    condition: "< 0.1"
+    duration_seconds: 0
+  enforcement_action:
+    - stop_motors
+    - alert_operator
+  tests:
+    - simulate_metric: {metric: ultrasonic_distance_m, values: [0.5, 0.05], expected_action: [stop_motors, alert_operator]}

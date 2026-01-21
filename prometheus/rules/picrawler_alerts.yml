@@ -1,0 +1,40 @@
+groups:
+- name: picrawler-critical
+  rules:
+    - alert: PicrawlerBatteryLow
+      expr: picrawler_battery_voltage_volts < 6.0
+      for: 15s
+      labels:
+        severity: page
+      annotations:
+        summary: "Battery voltage low on {{ $labels.instance }}"
+        description: "picrawler_battery_voltage_volts < 6.0 for > 15s. Action: stop motors & notify operator."
+
+    - alert: PicrawlerOverTemp
+      expr: picrawler_cpu_temp_celsius > 85
+      for: 10s
+      labels:
+        severity: page
+      annotations:
+        summary: "CPU over-temperature on {{ $labels.instance }}"
+        description: "picrawler_cpu_temp_celsius > 85C for > 10s. Action: throttle CPU and notify operator."
+
+    - alert: PicrawlerCollisionImminent
+      expr: ultrasonic_distance_m < 0.1
+      for: 0s
+      labels:
+        severity: page
+      annotations:
+        summary: "Collision imminent on {{ $labels.instance }}"
+        description: "ultrasonic_distance_m < 0.1m. Immediate stop recommended."
+
+- name: picrawler-warnings
+  rules:
+    - alert: PicrawlerAgentMissingHeartbeat
+      expr: picrawler_agent_heartbeat_age_seconds > 90
+      for: 0s
+      labels:
+        severity: warning
+      annotations:
+        summary: "Agent heartbeat missing on {{ $labels.instance }}"
+        description: "Agent heartbeat age > 90s — consider restart and check logs."
